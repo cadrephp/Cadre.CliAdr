@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="cadre" default="build">
+
+    <target name="build" depends="prepare,lint,phpcs,phpunit-coverage" />
+    <target name="ci" depends="prepare,lint,phpcs-ci,phpunit" />
+    <target name="test" depends="phpunit" />
+
+    <target name="clean" description="Cleanup build artifacts">
+        <delete dir="build/api" />
+        <delete dir="build/coverage" />
+        <delete dir="build/logs" />
+    </target>
+
+    <target name="prepare" depends="clean" description="Prepare for build">
+        <mkdir dir="build/api"/>
+        <mkdir dir="build/coverage"/>
+        <mkdir dir="build/logs"/>
+    </target>
+
+    <target name="lint" description="Perform syntax check of sourcecode files">
+        <phplint>
+            <fileset dir="src">
+                <include name="**/*.php" />
+            </fileset>
+
+            <fileset dir="tests">
+                <include name="**/*.php" />
+            </fileset>
+        </phplint>
+    </target>
+
+    <target name="phpcs" description="Find coding standard violations.">
+        <exec executable="vendor/bin/phpcs" passthru="true">
+            <arg value="--standard=phpcs.xml" />
+            <arg path="src" />
+            <arg path="tests" />
+        </exec>
+    </target>
+
+     <target name="phpcs-ci" description="Find coding standard violations for CI.">
+        <exec executable="vendor/bin/phpcs" output="/dev/null" passthru="true">
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=build/logs/checkstyle.xml" />
+            <arg value="--standard=phpcs.xml" />
+            <arg path="src" />
+            <arg path="tests" />
+        </exec>
+     </target>
+
+    <target name="phpunit" description="Run all tests with PHPUnit">
+        <exec executable="vendor/bin/phpunit" checkreturn="true" passthru="true" />
+    </target>
+
+    <target name="phpunit-coverage" description="Run all tests and generate html coverage report">
+        <exec executable="vendor/bin/phpunit" checkreturn="true" passthru="true">
+            <arg value="--coverage-html=build/coverage" />
+        </exec>
+    </target>
+
+</project>

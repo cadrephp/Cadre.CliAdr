@@ -1,0 +1,32 @@
+{
+    "name": "cadre/cliadr",
+    "description": "Command line ADR implementation",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "aura/di": "~3.0",
+        "aura/cli": "~2.0"
+    },
+    "require-dev": {
+        "phing/phing": "^2.15",
+        "phpunit/phpunit": "^5.0",
+        "squizlabs/php_codesniffer": "^2.6.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cadre\\CliAdr\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cadre\\CliAdr\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Andrew Shell",
+            "email": "andrew@andrewshell.org"
+        }
+    ],
+    "minimum-stability": "stable"
+}
