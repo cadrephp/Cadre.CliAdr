@@ -3,7 +3,7 @@ namespace Cadre\CliAdr;
 
 use Aura\Di\Injection\InjectionFactory;
 
-class ResolverTest extends \PHPUnit_Framework_TestCase
+class ResolverTest extends \PHPUnit\Framework\TestCase
 {
     public function testInvokeResolver()
     {

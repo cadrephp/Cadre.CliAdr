@@ -6,7 +6,7 @@ use Aura\Cli\Context\Getopt;
 use Aura\Cli\Status;
 use Aura\Cli\Stdio;
 
-class InputTest extends \PHPUnit_Framework_TestCase
+class InputTest extends \PHPUnit\Framework\TestCase
 {
     public function testInput()
     {

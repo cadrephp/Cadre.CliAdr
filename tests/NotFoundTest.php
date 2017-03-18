@@ -6,7 +6,7 @@ use Aura\Cli\Context\Getopt;
 use Aura\Cli\Status;
 use Aura\Cli\Stdio;
 
-class NotFoundTest extends \PHPUnit_Framework_TestCase
+class NotFoundTest extends \PHPUnit\Framework\TestCase
 {
     public function testNotFound()
     {

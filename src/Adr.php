@@ -22,7 +22,7 @@ class Adr
 
     public function run(Context $context, Stdio $stdio)
     {
-        $name = $context->getOpt([])->get(1);
+        $name = $context->getopt([])->get(1);
         $route = $this->router->match($name);
 
         $responder = ($this->resolver)($route->responder);

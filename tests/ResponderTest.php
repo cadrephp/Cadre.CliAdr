@@ -5,7 +5,7 @@ use Aura\Cli\Context;
 use Aura\Cli\Status;
 use Aura\Cli\Stdio;
 
-class ResponderTest extends \PHPUnit_Framework_TestCase
+class ResponderTest extends \PHPUnit\Framework\TestCase
 {
     public function testResponderWithNoPayload()
     {

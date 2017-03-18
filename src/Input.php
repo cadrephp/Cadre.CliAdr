@@ -8,7 +8,7 @@ class Input
 {
     public function __invoke(Context $context, Stdio $stdio)
     {
-        $getopt = $context->getOpt(['h,help', 'v,verbose']);
+        $getopt = $context->getopt(['h,help', 'v,verbose']);
         return [$getopt->get()];
     }
 }

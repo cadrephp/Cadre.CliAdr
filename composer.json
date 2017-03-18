@@ -8,9 +8,11 @@
         "aura/cli": "~2.0"
     },
     "require-dev": {
+        "pds/skeleton": "1.x-dev",
         "phing/phing": "^2.15",
-        "phpunit/phpunit": "^5.0",
-        "squizlabs/php_codesniffer": "^2.6.2"
+        "phpunit/phpunit": "^6.0",
+        "squizlabs/php_codesniffer": "^3.0@RC",
+        "phpstan/phpstan": "^0.6.3"
     },
     "autoload": {
         "psr-4": {
