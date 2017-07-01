@@ -4,6 +4,7 @@
     "type": "library",
     "license": "MIT",
     "require": {
+        "php": ">=7.0",
         "aura/di": "~3.0",
         "aura/cli": "~2.0"
     },
