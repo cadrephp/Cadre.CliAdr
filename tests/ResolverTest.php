@@ -2,8 +2,9 @@
 namespace Cadre\CliAdr;
 
 use Aura\Di\Injection\InjectionFactory;
+use PHPUnit\Framework\TestCase;
 
-class ResolverTest extends \PHPUnit\Framework\TestCase
+class ResolverTest extends TestCase
 {
     public function testInvokeResolver()
     {

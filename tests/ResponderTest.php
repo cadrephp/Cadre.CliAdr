@@ -4,8 +4,9 @@ namespace Cadre\CliAdr;
 use Aura\Cli\Context;
 use Aura\Cli\Status;
 use Aura\Cli\Stdio;
+use PHPUnit\Framework\TestCase;
 
-class ResponderTest extends \PHPUnit\Framework\TestCase
+class ResponderTest extends TestCase
 {
     public function testResponderWithNoPayload()
     {

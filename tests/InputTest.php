@@ -5,8 +5,9 @@ use Aura\Cli\Context;
 use Aura\Cli\Context\Getopt;
 use Aura\Cli\Status;
 use Aura\Cli\Stdio;
+use PHPUnit\Framework\TestCase;
 
-class InputTest extends \PHPUnit\Framework\TestCase
+class InputTest extends TestCase
 {
     public function testInput()
     {

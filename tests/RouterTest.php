@@ -1,7 +1,9 @@
 <?php
 namespace Cadre\CliAdr;
 
-class RouterTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class RouterTest extends TestCase
 {
     public function testRouteWithoutDomain()
     {

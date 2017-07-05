@@ -1,7 +1,9 @@
 <?php
 namespace Cadre\CliAdr;
 
-class RouteTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class RouteTest extends TestCase
 {
     public function testDefaultRoute()
     {

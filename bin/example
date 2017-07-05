@@ -1,12 +1,5 @@
-# Cadre.CliAdr
-
-This is a proof of concept command line Action-Domain-Responder (ADR) implementation.
-
-It's heavily inspired by [Radar](https://github.com/radarphp/Radar.Project).
-
-## Example
-
-```php
+#!/usr/bin/env php
+<?php
 use Aura\Cli\CliFactory;
 use Cadre\CliAdr\Boot;
 
@@ -24,4 +17,3 @@ $context = $factory->newContext($GLOBALS);
 $stdio = $factory->newStdio();
 
 exit($adr->run($context, $stdio));
-```
