@@ -1,5 +1,5 @@
 <?php
-namespace Cadre\CliAdr;
+namespace Cadre\CliAdr\Input;
 
 use Aura\Cli\Context;
 use Aura\Cli\Context\Getopt;

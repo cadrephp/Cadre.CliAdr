@@ -77,4 +77,29 @@ class RouterTest extends TestCase
         $this->assertEquals('', $route->domain);
         $this->assertEquals($notFound, $route->responder);
     }
+
+    public function testGetRoutes()
+    {
+        $router = new Router(new Route());
+
+        $name = uniqid();
+        $domain = uniqid();
+
+        $route = $router->route($name, $domain);
+
+        $routes = $router->getRoutes();
+
+        $this->assertArrayHasKey($name, $routes);
+        $this->assertEquals($name, $routes[$name]->name);
+        $this->assertEquals($domain, $routes[$name]->domain);
+    }
+
+    public function testDefaultRouteIndex()
+    {
+        $router = new Router(new Route());
+
+        $route = $router->match('');
+
+        $this->assertEquals('index', $route->name);
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Cadre\CliAdr;
+namespace Cadre\CliAdr\Responder;
 
 use Aura\Cli\Context;
 use Aura\Cli\Status;

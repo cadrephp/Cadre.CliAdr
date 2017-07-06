@@ -5,7 +5,7 @@ class Router
 {
     protected $protoRoute;
     protected $routes = [];
-    protected $notFound = 'Cadre\CliAdr\NotFound';
+    protected $notFound = 'Cadre\CliAdr\Responder\NotFound';
 
     public function __construct(Route $protoRoute)
     {
@@ -23,6 +23,11 @@ class Router
         $this->notFound = $responder;
     }
 
+    public function getRoutes()
+    {
+        return $this->routes;
+    }
+
     public function route($name, $domain = null)
     {
         $this->routes[$name] = clone $this->protoRoute;
@@ -35,6 +40,10 @@ class Router
 
     public function match($name)
     {
+        if (empty($name)) {
+            $name = 'index';
+        }
+
         if (isset($this->routes[$name])) {
             return $this->routes[$name];
         }

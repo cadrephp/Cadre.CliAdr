@@ -9,7 +9,7 @@ class Adr
     private $router;
     private $resolver;
 
-    public function __construct(Router $router, Resolver $resolver)
+    public function __construct(Router $router, callable $resolver)
     {
         $this->router = $router;
         $this->resolver = $resolver;

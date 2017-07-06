@@ -10,9 +10,9 @@ class RouteTest extends TestCase
         $route = new Route();
 
         $this->assertEquals('', $route->name);
-        $this->assertEquals('Cadre\CliAdr\Input', $route->input);
+        $this->assertEquals('Cadre\CliAdr\Input\Input', $route->input);
         $this->assertEquals('', $route->domain);
-        $this->assertEquals('Cadre\CliAdr\Responder', $route->responder);
+        $this->assertEquals('Cadre\CliAdr\Responder\Responder', $route->responder);
     }
 
     public function testCustomName()

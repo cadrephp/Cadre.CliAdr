@@ -4,9 +4,9 @@ namespace Cadre\CliAdr;
 class Route
 {
     protected $name;
-    protected $input = 'Cadre\CliAdr\Input';
+    protected $input = 'Cadre\CliAdr\Input\Input';
     protected $domain;
-    protected $responder = 'Cadre\CliAdr\Responder';
+    protected $responder = 'Cadre\CliAdr\Responder\Responder';
 
     public function __get($key)
     {
