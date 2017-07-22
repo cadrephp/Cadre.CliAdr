@@ -3,9 +3,8 @@ namespace Cadre\CliAdr\Input;
 
 use Aura\Cli\Context;
 use Aura\Cli\Help as AuraCliHelp;
-use Aura\Cli\Stdio;
 
-class Help implements HelpAware
+class Help implements HelpAwareInterface
 {
     public function help(AuraCliHelp $help)
     {
@@ -17,7 +16,7 @@ class Help implements HelpAware
         return $help;
     }
 
-    public function __invoke(Context $context, Stdio $stdio)
+    public function __invoke(Context $context)
     {
         $getopt = $context->getopt([]);
         return [$getopt->get(2, 'help')];

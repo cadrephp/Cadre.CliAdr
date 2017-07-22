@@ -4,32 +4,50 @@ namespace Cadre\CliAdr;
 use Aura\Di\Container;
 use Aura\Di\ContainerConfig;
 
+use Arbiter;
+use Aura\Cli;
+
 class Config extends ContainerConfig
 {
     public function define(Container $di)
     {
-        $di->set('cadre:cliadr/adr', $di->lazyNew('Cadre\CliAdr\Adr'));
-        $di->set('cadre:cliadr/router', $di->lazyNew('Cadre\CliAdr\Router'));
-        $di->set('cadre:cliadr/resolver', $di->lazyNew('Cadre\CliAdr\Resolver'));
+        $di->set('cadre:cliadr/adr', $di->lazyNew(Adr::class));
+        $di->set('cadre:cliadr/resolver', $di->newResolutionHelper());
+        $di->set('cadre:cliadr/router:map', $di->lazyNew(Router\Map::class));
 
-        $di->params['Cadre\CliAdr\Adr'] = [
-            'router' => $di->lazyGet('cadre:cliadr/router'),
-            'resolver' => $di->lazyGet('cadre:cliadr/resolver'),
+        $di->params[Router\Map::class] = [
+            'protoRoute' => $di->lazyNew(Router\Route::class)
         ];
 
-        $di->params['Cadre\CliAdr\Router'] = [
-            'protoRoute' => $di->lazyNew('Cadre\CliAdr\Route'),
+        $di->params[Router\Matcher::class] = [
+            'map' => $di->lazyGet('cadre:cliadr/router:map')
         ];
 
-        $di->params['Cadre\CliAdr\Resolver']['injectionFactory'] = $di->getInjectionFactory();
-
-        $di->params['Cadre\CliAdr\Command\Help'] = [
-            'router' => $di->lazyGet('cadre:cliadr/router'),
-            'resolver' => $di->lazyGet('cadre:cliadr/resolver'),
+        $di->params[Adr::class] = [
+            'map' => $di->lazyGet('cadre:cliadr/router:map'),
+            'actionFactory' => $di->lazyNew(ActionFactory::class),
+            'handler' => $di->lazyNew(Arbiter\ActionHandler::class)
         ];
 
-        $di->params['Cadre\CliAdr\Command\Index'] = [
-            'router' => $di->lazyGet('cadre:cliadr/router'),
+        $di->params[ActionFactory::class] = [
+            'matcher' => $di->lazyNew(Router\Matcher::class)
+        ];
+
+        $di->params[Input\AbstractStdioInput::class] = [
+            'stdio' => $di->lazyGetCall('cadre:cliadr/adr', 'getStdio')
+        ];
+
+        $di->params[Arbiter\ActionHandler::class] = [
+            'resolver' => $di->lazyGet('cadre:cliadr/resolver')
+        ];
+
+        $di->params[Cli\Help::class] = [
+            'option_factory' => $di->lazyNew(Cli\Context\OptionFactory::class)
+        ];
+
+        $di->params[Command\AbstractMetaCommand::class] = [
+            'map'      => $di->lazyGet('cadre:cliadr/router:map'),
+            'help'     => $di->lazyNew(Cli\Help::class),
             'resolver' => $di->lazyGet('cadre:cliadr/resolver'),
         ];
     }
@@ -38,10 +56,10 @@ class Config extends ContainerConfig
     {
         $adr = $di->get('cadre:cliadr/adr');
 
-        $adr->route('help', 'Cadre\CliAdr\Command\Help')
-            ->input('Cadre\CliAdr\Input\Help');
+        $adr->route('help', Command\Help::class)
+            ->input(Input\Help::class);
 
-        $adr->route('index', 'Cadre\CliAdr\Command\Index')
-            ->input('Cadre\CliAdr\Input\Index');
+        $adr->route('index', Command\Index::class)
+            ->input(Input\Index::class);
     }
 }

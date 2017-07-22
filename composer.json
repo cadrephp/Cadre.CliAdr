@@ -5,8 +5,9 @@
     "license": "MIT",
     "require": {
         "php": ">=7.0",
-        "aura/di": "^3.2.0",
-        "aura/cli": "^2.2.0"
+        "aura/di": "@dev",
+        "aura/cli": "^2.2.0",
+        "arbiter/arbiter": "1.x-dev"
     },
     "require-dev": {
         "pds/skeleton": "^1.0.0",

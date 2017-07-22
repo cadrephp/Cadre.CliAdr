@@ -7,10 +7,9 @@ use Aura\Cli\Stdio;
 
 class NotFound
 {
-    public function __invoke(Context $context, Stdio $stdio, $payload = null)
+    public function __invoke(Context $context, Stdio $stdio, $commandName = null)
     {
-        $name = $context->getopt([])->get(1, '');
-        $stdio->errln(sprintf("Command '%s' not found", $name));
+        $stdio->errln(sprintf("Command '%s' not found", $commandName));
         return Status::FAILURE;
     }
 }

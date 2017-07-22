@@ -3,45 +3,120 @@ namespace Cadre\CliAdr;
 
 use Aura\Cli\Context;
 use Aura\Cli\Stdio;
+use Arbiter\ActionHandler;
 
 class Adr
 {
-    private $router;
-    private $resolver;
+    /**
+     * Route map
+     *
+     * @var Router\Map
+     *
+     * @access protected
+     */
+    protected $map;
 
-    public function __construct(Router $router, callable $resolver)
-    {
-        $this->router = $router;
-        $this->resolver = $resolver;
+    /**
+     * Action Factory
+     *
+     * @var ActionFactory
+     *
+     * @access protected
+     */
+    protected $actionFactory;
+
+    /**
+     * Handler
+     *
+     * @var \Arbiter\ActionHandler
+     *
+     * @access protected
+     */
+    protected $handler;
+
+    /**
+     * Aura\Cli standard input/output
+     *
+     * @var Stdio
+     *
+     * @access protected
+     */
+    protected $stdio;
+
+    /**
+     * __construct
+     *
+     * @param Router\Map    $map           Map of routes
+     * @param ActionFactory $actionFactory Factory to create actions
+     * @param ActionHandler $handler       Action handler
+     *
+     * @access public
+     */
+    public function __construct(
+        Router\Map $map,
+        ActionFactory $actionFactory,
+        ActionHandler $handler
+    ) {
+        $this->map = $map;
+        $this->actionFactory = $actionFactory;
+        $this->handler = $handler;
     }
 
+    /**
+     * Get Aura\Cli standard input/output
+     *
+     * @return Stdio
+     *
+     * @access public
+     */
+    public function getStdio()
+    {
+        return $this->stdio;
+    }
+
+    /**
+     * Set shared stdio instance
+     *
+     * @param Cli\Stdio $stdio shared stdio instance
+     *
+     * @return null
+     *
+     * @access public
+     */
+    protected function setStdio(Stdio $stdio)
+    {
+        $this->stdio = $stdio;
+    }
+
+    /**
+     * Proxy to route map
+     *
+     * @param mixed $method called method
+     * @param array $params params passed
+     *
+     * @return Router\Route
+     *
+     * @access public
+     */
     public function __call($method, array $params)
     {
-        return call_user_func_array([$this->router, $method], $params);
+        return call_user_func_array([$this->map, $method], $params);
     }
 
+    /**
+     * Run Command
+     *
+     * @param Context $context Aura\Cli command context
+     * @param Stdio   $stdio   Aura\Cli input/output
+     *
+     * @return mixed
+     *
+     * @access public
+     */
     public function run(Context $context, Stdio $stdio)
     {
-        $name = $context->getopt([])->get(1);
-        $route = $this->router->match($name);
-
-        $responder = ($this->resolver)($route->responder);
-        if (! $responder) {
-            throw new \Exception('Could not resolve responder for action.');
-        }
-
-        $domain = ($this->resolver)($route->domain);
-        if (! $domain) {
-            return $responder($context, $stdio);
-        }
-
-        $params = [];
-        $input = ($this->resolver)($route->input);
-        if ($input) {
-            $params = (array) $input($context, $stdio);
-        }
-
-        $payload = call_user_func_array($domain, $params);
-        return $responder($context, $stdio, $payload);
+        $this->setStdio($stdio);
+        $action = $this->actionFactory->fromContext($context);
+        return $this->handler->handle($action, $context, $stdio);
     }
 }

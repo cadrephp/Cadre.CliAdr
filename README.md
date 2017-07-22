@@ -12,16 +12,16 @@ use Aura\Cli\Context;
 use Aura\Cli\Help;
 use Aura\Cli\Stdio;
 use Cadre\CliAdr\Boot;
-use Cadre\CliAdr\HelpAware;
+use Cadre\CliAdr\Input\HelpAwareInterface;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 $boot = new Boot();
 $adr = $boot->adr();
 
 $adr->route('hello', function ($name) {
     return "Hello, {$name}";
-})->input(new class implements HelpAware {
+})->input(new class implements HelpAwareInterface {
     public function help(Help $help)
     {
         $help->setSummary('Hello, World');
@@ -32,7 +32,7 @@ $adr->route('hello', function ($name) {
         return $help;
     }
 
-    public function __invoke(Context $context, Stdio $stdio)
+    public function __invoke(Context $context)
     {
         $getopt = $context->getopt([]);
         return [$getopt->get(2, 'World')];
@@ -44,4 +44,5 @@ $context = $factory->newContext($GLOBALS);
 $stdio = $factory->newStdio();
 
 exit($adr->run($context, $stdio));
+
 ```

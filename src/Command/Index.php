@@ -1,63 +1,86 @@
 <?php
 namespace Cadre\CliAdr\Command;
 
-use Aura\Cli\Context\OptionFactory;
-use Aura\Cli\Help;
-use Cadre\CliAdr\Input\HelpAware;
-use Cadre\CliAdr\Router;
+use Cadre\CliAdr\Router\Route;
+use Cadre\CliAdr\Input\HelpAwareInterface;
 
-class Index
+class Index extends AbstractMetaCommand
 {
-    private $router;
-    private $resolver;
 
-    public function __construct(Router $router, callable $resolver)
-    {
-        $this->router = $router;
-        $this->resolver = $resolver;
-    }
-
+    /**
+     * Get an index of available command
+     *
+     * @return string
+     *
+     * @access public
+     */
     public function __invoke()
     {
         $list = $this->getUsage()
-              . $this->getCommands()
-        ;
+              . $this->getCommands();
 
         return rtrim($list) . PHP_EOL;
     }
 
-    private function getUsage()
+    /**
+     * Get usage header
+     *
+     * @return string
+     *
+     * @access protected
+     */
+    protected function getUsage()
     {
         return "<<bold>>USAGE<<reset>>" . PHP_EOL
              . "    command [options] [arguments]" . PHP_EOL . PHP_EOL;
     }
 
-    private function getCommands()
+    /**
+     * Get command index listing
+     *
+     * @return string
+     *
+     * @access protected
+     */
+    protected function getCommands()
     {
         $commands = [];
 
-        $routes = $this->router->getRoutes();
-
-        foreach ($routes as $route) {
-            $input = ($this->resolver)($route->input);
-            if ($input instanceof HelpAware) {
-                $help = $input->help(new Help(new OptionFactory));
-                $commands[$route->name] = $help->getSummary();
-            }
-            if (empty($commands[$route->name])) {
-                $commands[$route->name] = 'No description';
-            }
-        }
-
-        ksort($commands);
+        $routes = $this->map->getRoutes();
+        ksort($routes);
 
         $text = '';
-        foreach ($commands as $name => $summary) {
+        foreach ($routes as $route) {
+            $name    = $route->name;
+            $summary = $this->getCommandSummary($route);
             $text .= "    {$name}" . PHP_EOL;
             $text .= "        {$summary}" . PHP_EOL;
         }
 
         return "<<bold>>COMMANDS<<reset>>" . PHP_EOL
              . "    " . trim($text) . PHP_EOL . PHP_EOL;
+    }
+
+    /**
+     * Get command summary
+     *
+     * Uses input spec help if input is HelpAware,
+     * otherwide "No Description"
+     *
+     * @param Route $route command route
+     *
+     * @return string
+     *
+     * @access protected
+     */
+    protected function getCommandSummary(Route $route)
+    {
+        $input = $this->resolve($route->input);
+        if (! $input instanceof HelpAwareInterface) {
+            return 'No description';
+        }
+
+        $input->help($this->help);
+        return $this->help->getSummary();
     }
 }

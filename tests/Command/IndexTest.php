@@ -1,11 +1,12 @@
 <?php
 namespace Cadre\CliAdr\Command;
 
-use Aura\Cli\Help as AuraCliHelp;
-use Cadre\CliAdr\Input\HelpAware;
+use Aura\Cli\Help;
+use Aura\Cli\Context\OptionFactory;
+use Cadre\CliAdr\Input\HelpAwareInterface;
 use Cadre\CliAdr\Resolver;
-use Cadre\CliAdr\Route;
-use Cadre\CliAdr\Router;
+use Cadre\CliAdr\Router\Route;
+use Cadre\CliAdr\Router\Map;
 use PHPUnit\Framework\TestCase;
 
 class IndexTest extends TestCase
@@ -18,29 +19,28 @@ class IndexTest extends TestCase
         $route->name($name);
         $route->input('InputClassName');
 
-        $router = $this->getMockBuilder(Router::class)
+        $map = $this->getMockBuilder(Map::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $router->expects($this->once())
+        $map->expects($this->once())
             ->method('getRoutes')
-            ->willReturn([$route]);
+            ->willReturn([$name => $route]);
 
-        $resolver = $this->getMockBuilder(Resolver::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $resolver = $this->createPartialMock(\stdClass::class, ['__invoke']);
 
         $resolver->expects($this->once())
             ->method('__invoke')
             ->with('InputClassName')
-            ->willReturn(new class implements HelpAware {
-                public function help(AuraCliHelp $help) {
+            ->willReturn(new class implements HelpAwareInterface {
+                public function help(Help $help) {
                     $help->setSummary('The summary');
                     return $help;
                 }
             });
 
-        $command = new Index($router, $resolver);
+        $help = new Help(new OptionFactory);
+        $command = new Index($map, $help,  $resolver);
 
         $text = ($command)($name);
 
@@ -66,24 +66,23 @@ class IndexTest extends TestCase
         $route->name($name);
         $route->input('InputClassName');
 
-        $router = $this->getMockBuilder(Router::class)
+        $map = $this->getMockBuilder(Map::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $router->expects($this->once())
+        $map->expects($this->once())
             ->method('getRoutes')
             ->willReturn([$route]);
 
-        $resolver = $this->getMockBuilder(Resolver::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $resolver = $this->createPartialMock(\stdClass::class, ['__invoke']);
 
         $resolver->expects($this->once())
             ->method('__invoke')
             ->with('InputClassName')
             ->willReturn(new class {});
 
-        $command = new Index($router, $resolver);
+        $help = new Help(new OptionFactory);
+        $command = new Index($map, $help,  $resolver);
 
         $text = ($command)($name);
 
