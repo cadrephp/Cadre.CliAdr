@@ -11,19 +11,9 @@ class NotFoundTest extends TestCase
 {
     public function testNotFound()
     {
-        $getopt = $this->getMockBuilder(Getopt::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $getopt->method('get')
-            ->willReturn('blah');
-
         $context = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $context->method('getOpt')
-            ->willReturn($getopt);
 
         $stdio = $this->getMockBuilder(Stdio::class)
             ->disableOriginalConstructor()
@@ -36,7 +26,7 @@ class NotFoundTest extends TestCase
 
         $notFound = new NotFound();
 
-        $result = $notFound($context, $stdio);
+        $result = $notFound($context, $stdio, 'blah');
 
         $this->assertSame(Status::FAILURE, $result);
     }

@@ -2,10 +2,10 @@
 namespace Cadre\CliAdr\Command;
 
 use Aura\Cli\Help as AuraCliHelp;
-use Cadre\CliAdr\Input\HelpAware;
-use Cadre\CliAdr\Resolver;
-use Cadre\CliAdr\Route;
-use Cadre\CliAdr\Router;
+use Aura\Cli\Context\OptionFactory;
+use Cadre\CliAdr\Input\HelpAwareInterface;
+use Cadre\CliAdr\Router\Route;
+use Cadre\CliAdr\Router\Map;
 use PHPUnit\Framework\TestCase;
 
 class HelpTest extends TestCase
@@ -18,30 +18,34 @@ class HelpTest extends TestCase
         $route->name($name);
         $route->input('InputClassName');
 
-        $router = $this->getMockBuilder(Router::class)
+        $map = $this->getMockBuilder(Map::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $router->expects($this->once())
-            ->method('match')
+        $map->expects($this->once())
+            ->method('hasRoute')
+            ->with($name)
+            ->willReturn('true');
+
+        $map->expects($this->once())
+            ->method('getRoute')
             ->with($name)
             ->willReturn($route);
 
-        $resolver = $this->getMockBuilder(Resolver::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $resolver = $this->createPartialMock(\stdClass::class, ['__invoke']);
 
         $resolver->expects($this->once())
             ->method('__invoke')
             ->with('InputClassName')
-            ->willReturn(new class implements HelpAware {
-                public function help(AuraCliHelp $help) {
-                    $help->setSummary('The summary');
-                    return $help;
-                }
-            });
+            ->willReturn(new class implements HelpAwareInterface {
+            public function help(AuraCliHelp $help) {
+                $help->setSummary('The summary');
+                return $help;
+            }
+        });
 
-        $command = new Help($router, $resolver);
+        $help = new AuraCliHelp(new OptionFactory);
+        $command = new Help($map, $help,  $resolver);
 
         $text = ($command)($name);
 
@@ -66,25 +70,29 @@ class HelpTest extends TestCase
         $route->name($name);
         $route->input('InputClassName');
 
-        $router = $this->getMockBuilder(Router::class)
+        $map = $this->getMockBuilder(Map::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $router->expects($this->once())
-            ->method('match')
+        $map->expects($this->once())
+            ->method('hasRoute')
+            ->with($name)
+            ->willReturn(true);
+
+        $map->expects($this->once())
+            ->method('getRoute')
             ->with($name)
             ->willReturn($route);
 
-        $resolver = $this->getMockBuilder(Resolver::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $resolver = $this->createPartialMock(\stdClass::class, ['__invoke']);
 
         $resolver->expects($this->once())
             ->method('__invoke')
             ->with('InputClassName')
             ->willReturn(new class {});
 
-        $command = new Help($router, $resolver);
+        $help = new AuraCliHelp(new OptionFactory);
+        $command = new Help($map, $help,  $resolver);
 
         $text = ($command)($name);
 

@@ -1,5 +1,5 @@
 <?php
-namespace Cadre\CliAdr;
+namespace Cadre\CliAdr\Router;
 
 use PHPUnit\Framework\TestCase;
 
